@@ -106,7 +106,7 @@ public class TalkClient extends JFrame implements ActionListener {
 			
 			oos.writeObject(100+"|"+nickName);
 			
-			TalkClientThread tct = new TalkClientThread();
+			TalkClientThread tct = new TalkClientThread(this);
 			tct.start();
 			
 		} catch (UnknownHostException e) {
