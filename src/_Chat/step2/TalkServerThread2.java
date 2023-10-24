@@ -28,7 +28,7 @@ public class TalkServerThread2 extends Thread {
 			chatName = st.nextToken();
 			ts.jta_log.append(chatName+"님이 입장하였습니다.\n");
 			
-			for(TalkServerThread2 tst:ts.globalList) {
+			for(TalkServerThread2 tst : ts.globalList) {
 			//이전에 입장해 있는 친구들 정보 받아내기
 				//String currentName = tst.chatName;
 				this.send(100+"|"+tst.chatName);
@@ -81,25 +81,19 @@ public class TalkServerThread2 extends Thread {
 					case 201:{
 						String nickName = st.nextToken();
 						String message = st.nextToken();
-						broadCasting(201
-								   +"|"+nickName
-								   +"|"+message);
+						broadCasting(201+"|"+nickName+"|"+message);
 					}break;
 					case 202:{
 						String nickName = st.nextToken();
 						String afterName = st.nextToken();
 						String message = st.nextToken();
 						this.chatName = afterName;
-						broadCasting(202
-								+"|"+nickName
-								+"|"+afterName
-        						+"|"+message);
+						broadCasting(202+"|"+nickName+"|"+afterName+"|"+message);
 					}break;
 					case 500:{
 						String nickName = st.nextToken();
 						ts.globalList.remove(this);
-						broadCasting(500
-								+"|"+nickName);
+						broadCasting(500+"|"+nickName);
 					}break run_start;
 				}/////////////end of switch
 			}/////////////////end of while			

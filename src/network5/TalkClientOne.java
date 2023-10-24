@@ -21,16 +21,15 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class TalkClient extends JFrame implements ActionListener {
+public class TalkClientOne extends JFrame implements ActionListener {
 	
 	Socket socket = null;
 	ObjectOutputStream oos = null;// 말 하고 싶을 때
 	ObjectInputStream ois = null;// 듣기 할 때
-	String nickName = null;// 닉네임 등록
 
 	JPanel jp_second = new JPanel();
 	JPanel jp_second_south = new JPanel();
-	JButton jbtn_one = new JButton("1:1");
+	//JButton jbtn_one = new JButton("1:1");
 	JButton jbtn_change = new JButton("대화명변경");
 	JButton jbtn_font = new JButton("글자색");
 	JButton jbtn_exit = new JButton("나가기");
@@ -46,22 +45,19 @@ public class TalkClient extends JFrame implements ActionListener {
 	JTextArea jta_display = null;
 	JScrollPane jsp_display = null;
 	
-	LoginForm loginForm = null;
+	String nickName2;
+	String selectedNickname;
 
-	public TalkClient() {
-		
-	}
-
-	public TalkClient(LoginForm loginForm) {
-		this.loginForm = loginForm;
+	public TalkClientOne(String nickName2, String selectedNickname) {
 		JFrame.setDefaultLookAndFeelDecorated(true);
-		nickName = loginForm.nickName;
+		this.nickName2 = nickName2;
+		this.selectedNickname = selectedNickname;
 		initDisplay();
 		init();
 	}
 
 	public void initDisplay() {
-		jbtn_one.addActionListener(this);
+		//jbtn_one.addActionListener(this);
 		jtf_msg.addActionListener(this);
 		jbtn_exit.addActionListener(this);
 		jbtn_change.addActionListener(this);
@@ -74,7 +70,7 @@ public class TalkClient extends JFrame implements ActionListener {
 		jp_second.setLayout(new BorderLayout());
 		jp_second.add("Center", jsp);
 		jp_second_south.setLayout(new GridLayout(2, 2));
-		jp_second_south.add(jbtn_one);
+		//jp_second_south.add(jbtn_one);
 		jp_second_south.add(jbtn_change);
 		jp_second_south.add(jbtn_font);
 		jp_second_south.add(jbtn_exit);
@@ -93,19 +89,19 @@ public class TalkClient extends JFrame implements ActionListener {
 		jp_first.add("South", jp_first_south);
 		this.add(jp_first);
 		this.add(jp_second);
-		this.setTitle(nickName);
+		this.setTitle(nickName2+"님 "+selectedNickname+"님의 1:1 대화방");
 		this.setSize(800, 550);
 		this.setVisible(true);
 	}
 	
 	public void init() {
 		//통신하는 로직
-		try {
-			socket = new Socket("172.16.2.27", 3002);
+		/*try {
+			//socket = new Socket("172.16.2.27", 3002);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			
-			oos.writeObject(100+"|"+nickName);
+			oos.writeObject(300+"|"+nickName2+"|"+selectedNickname);
 			
 			TalkClientThread tct = new TalkClientThread(this);
 			tct.start();
@@ -114,86 +110,12 @@ public class TalkClient extends JFrame implements ActionListener {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public static void main(String args[]) {
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		TalkClient tc = new TalkClient();
-		tc.nickName = "test";
-		tc.initDisplay();
-		tc.init();
+		}*/
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
-		//100(접속)|200(1:1대화)|201(대화)|202(대화명 바꾸기)|500(나가기)
-		if(obj == jbtn_exit) {//protocol : 500
-			String exitMsg = nickName+"님이 대화방을 나가셨습니다.\n";
-			try {
-				oos.writeObject(500+"|"+nickName+"|"+exitMsg);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			dispose();
-			loginForm.setVisible(true);
-			
-		}else if(obj == jtf_msg) {//대화 protocol : 201
-			String msg = jtf_msg.getText();
-			try {
-				oos.writeObject(201+"|"+nickName+"|"+msg);
-				jtf_msg.setText("");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}else if(obj == jbtn_change) {//protocol : 202
-			String afterNickName = JOptionPane.showInputDialog("변경할 대화명을 입력하세요.");
-			String changeMsg = nickName+"의 대화명이 "+afterNickName+"으로 변경되었습니다. \n";
-			if(afterNickName == null || afterNickName.trim().length()<1) {
-				JOptionPane.showMessageDialog(this
-				, "변경할 대화명을 입력하세요"
-				, "INFO", JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-			try {
-				oos.writeObject(202+"|"+nickName+"|"+afterNickName+"|"+changeMsg);
-			} catch (Exception e2) {
-				
-			}
-		}else if (obj == jbtn_font) {//protocol : 203
-			String []fontColor = {"Red", "Blue", "Green", "Black"};
-			Object selected = JOptionPane.showInputDialog(
-					null, 
-					"원하는 색을 선택 하세요!!",
-					"글자색 변경",
-					JOptionPane.QUESTION_MESSAGE, 
-					null, 
-					fontColor, 
-					fontColor[3]
-					);
-			if(selected == null) {
-			JOptionPane.showMessageDialog(null, "뭐야.. 원하는거 없어??;");
-			}else {
-				try {
-					oos.writeObject(203+"|"+nickName+"|"+selected);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}else if (obj == jbtn_one) {//protocol : 200
-			int selectedRowNum = jtb.getSelectedRow();
-			String selectedNickname = (String)jtb.getValueAt(selectedRowNum, 0);
-			if(nickName.equals(selectedNickname)) {
-				JOptionPane.showMessageDialog(null, "잘못 선택 하셨습니다.");
-			}else {
-				try {
-					oos.writeObject(200+"|"+nickName+"|"+selectedRowNum);
-					new TalkClientOne(nickName, selectedNickname);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
+		
 	}
 }
