@@ -8,6 +8,8 @@ import java.util.Vector;
 
 public class TalkClientThread extends Thread {
 	TalkClient tc = null;
+	Vector<String> ve = null;
+	Vector<String> v = null;
 
 	public TalkClientThread(TalkClient tc) {
 		this.tc = tc;
@@ -35,7 +37,7 @@ public class TalkClientThread extends Thread {
 				case 100: {
 					String nickname = st.nextToken();
 					tc.jta_display.append(nickname+"님이 접속하셨습니다. \n");
-					Vector<String> v = new Vector<>();
+					v = new Vector<>();
 					v.add(nickname);
 					tc.dtm.addRow(v);
 				}break;
@@ -105,19 +107,7 @@ public class TalkClientThread extends Thread {
 					}
 					tc.jta_display.setForeground(fontColor);
 				}break;
-				/*case 200:{
-					String nickname = st.nextToken();
-					String selectedRowNum = st.nextToken();
-					tc.mjta_display.append(nickname+"님이 접속하셨습니다. \n");
-					tc.mjta_display.append(selectedRowNum+"님이 접속하셨습니다. \n");
-					Vector<String> v = new Vector<>();
-					v.add(nickname);
-					tc.mdtm.addRow(v);
-					v = new Vector<>();
-					v.add(selectedRowNum);
-					tc.mdtm.addRow(v);
-					
-				}break;*/
+				
 				case 200:{
 					tc.initDisplay2();
 					String nickname = st.nextToken();
@@ -125,12 +115,12 @@ public class TalkClientThread extends Thread {
 					
 					tc.mjta_display.append(nickname+"님이 접속하셨습니다. \n");
 					tc.mjta_display.append(selectedNickname+"님이 접속하셨습니다. \n");
-					Vector<String> v = new Vector<>();
-					v.add(nickname);
-					tc.mdtm.addRow(v);
-					v = new Vector<>();
-					v.add(selectedNickname);
-					tc.mdtm.addRow(v);
+					ve = new Vector<>();
+					ve.add(nickname);
+					tc.mdtm.addRow(ve);
+					ve = new Vector<>();
+					ve.add(selectedNickname);
+					tc.mdtm.addRow(ve);
 					
 				}break;
 				case 301:{
@@ -138,6 +128,21 @@ public class TalkClientThread extends Thread {
 					String message = st.nextToken();
 					
 					tc.mjta_display.append("["+nickname+"] "+message+"\n");
+					tc.mjta_display.setCaretPosition(tc.mjta_display.getDocument().getLength());
+				}break;
+				case 600:{
+					String nickname = st.nextToken();
+					String exitMsg = st.nextToken();
+					
+					//접속자 테이블에서 제거 
+					for(int i = 0; i<tc.mdtm.getRowCount(); i++) {
+						if(nickname.equals((String)tc.mdtm.getValueAt(i, 0))) {
+							tc.mdtm.removeRow(i);
+							ve.removeAllElements();
+							System.out.println(ve);
+						}
+					}
+					tc.mjta_display.append(exitMsg);
 					tc.mjta_display.setCaretPosition(tc.mjta_display.getDocument().getLength());
 				}
 				}

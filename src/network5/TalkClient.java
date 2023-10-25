@@ -50,6 +50,7 @@ public class TalkClient extends JFrame implements ActionListener {
 
 	LoginForm loginForm = null;
 
+	JFrame jf = null;
 	JPanel mjp_second = new JPanel();
 	JPanel mjp_second_south = new JPanel();
 	// JButton mjbtn_one = new JButton("1:1");
@@ -116,41 +117,11 @@ public class TalkClient extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
-	/*public void initDisplay2(String nickName2, String selectedNickname) {
-		this.mnickName = nickName2;
-		this.selectedNickname = selectedNickname;
-		JFrame jf = new JFrame();
-
-		jf.setLayout(new GridLayout(1, 2));
-		mjp_second.setLayout(new BorderLayout());
-		mjp_second.add("Center", mjsp);
-		mjp_second_south.setLayout(new GridLayout(2, 2));
-		// mjp_second_south.add(jbtn_one);
-		mjp_second_south.add(mjbtn_exit);
-		mjp_second.add("South", mjp_second_south);
-		mjp_first.setLayout(new BorderLayout());
-		mjp_first_south.setLayout(new BorderLayout());
-		mjp_first_south.add("Center", mjtf_msg);
-		mjp_first_south.add("East", mjbtn_send);
-		// mjta_display = new JTextArea();
-		mjta_display.setLineWrap(true);
-		mjta_display.setOpaque(false);
-		Font mfont = new Font("굴림체", Font.BOLD, 16);
-		mjta_display.setFont(mfont);
-		// mjsp_display = new JScrollPane(mjta_display);
-		mjp_first.add("Center", mjsp_display);
-		mjp_first.add("South", mjp_first_south);
-
-		jf.add(mjp_first);
-		jf.add(mjp_second);
-		jf.setTitle("1:1 대화방");
-		jf.setSize(500, 550);
-		jf.setVisible(true);
-	}*/
 	public void initDisplay2() {
 		mjtf_msg.addActionListener(this);
+		mjbtn_exit.addActionListener(this);
 		
-		JFrame jf = new JFrame();
+		jf = new JFrame();
 		
 		jf.setLayout(new GridLayout(1, 2));
 		mjp_second.setLayout(new BorderLayout());
@@ -201,7 +172,7 @@ public class TalkClient extends JFrame implements ActionListener {
 	public static void main(String args[]) {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		TalkClient tc = new TalkClient();
-		tc.nickName = "test";
+		tc.nickName = "test3";
 		tc.initDisplay();
 		tc.init();
 	}
@@ -217,7 +188,8 @@ public class TalkClient extends JFrame implements ActionListener {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			dispose();
+			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			this.dispose();
 			loginForm.setVisible(true);
 
 		} else if (obj == jtf_msg) {// 대화 protocol : 201
@@ -253,19 +225,7 @@ public class TalkClient extends JFrame implements ActionListener {
 					e1.printStackTrace();
 				}
 			}
-			/*
-			 * }else if (obj == jbtn_one) {//protocol : 200 int selectedRowNum =
-			 * jtb.getSelectedRow(); String selectedNickname =
-			 * (String)jtb.getValueAt(selectedRowNum, 0);
-			 * if(nickName.equals(selectedNickname)) { JOptionPane.showMessageDialog(null,
-			 * "잘못 선택 하셨습니다."); }else { //try {
-			 * //oos.writeObject(200+"|"+nickName+"|"+selectedNickname); //new
-			 * TalkClientOne(this, nickName, selectedNickname);
-			 * initDisplay2(nickName,selectedNickname); try {
-			 * oos.writeObject(200+"|"+nickName+"|"+selectedNickname); } catch (IOException
-			 * e1) { e1.printStackTrace(); } //} catch (IOException e1) { //
-			 * e1.printStackTrace(); //} }
-			 */
+			
 		} else if (obj == jbtn_one) {// protocol : 200
 			int rowNum = 0;
 			int selectedRowNum = jtb.getSelectedRow();
@@ -295,6 +255,15 @@ public class TalkClient extends JFrame implements ActionListener {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		}else if(obj == mjbtn_exit) {
+			String exitMsg = nickName + "님이 대화방을 나가셨습니다.\n";
+			try {
+				oos.writeObject(600 + "|" + nickName + "|" + exitMsg);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			jf.dispose();
 		}
 	}
 }

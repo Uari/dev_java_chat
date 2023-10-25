@@ -56,6 +56,7 @@ public class TalkServerThread extends Thread {
 	//1:1 메세지 전송
 	public void oneCasting(String msg) {
 		for (TalkServerThread tst : ts.globalList2) {
+			System.out.println("oneCast"+tst);
 			tst.send(msg);
 		}
 	}
@@ -74,8 +75,8 @@ public class TalkServerThread extends Thread {
 				ts.globalList2.add(tst);
 			}
 		}
-		System.out.println(ts.globalList2);
 		for (TalkServerThread tst : ts.globalList2) {
+			System.out.println("oneInit"+tst);
 			tst.send(msg);
 		}
 	}
@@ -145,6 +146,12 @@ public class TalkServerThread extends Thread {
 					String message = st.nextToken();
 					oneCasting(301 + "|" + nickName + "|" + message);
 				}break;
+				case 600:{
+					String nickName = st.nextToken();
+					String exitMsg = st.nextToken();
+					ts.globalList2.remove(this);
+					oneCasting(600 + "|" + nickName + "|" +exitMsg);
+				}
 				}
 			} 
 		} catch (Exception e) {
