@@ -103,15 +103,43 @@ public class TalkClientThread extends Thread {
 						fontColor = Color.black;
 					}break;
 					}
-					//tc.jta_display.setCaretColor(fontColor);
-					//tc.jta_display.set
 					tc.jta_display.setForeground(fontColor);
 				}break;
-				case 200:{
+				/*case 200:{
 					String nickname = st.nextToken();
 					String selectedRowNum = st.nextToken();
+					tc.mjta_display.append(nickname+"님이 접속하셨습니다. \n");
+					tc.mjta_display.append(selectedRowNum+"님이 접속하셨습니다. \n");
+					Vector<String> v = new Vector<>();
+					v.add(nickname);
+					tc.mdtm.addRow(v);
+					v = new Vector<>();
+					v.add(selectedRowNum);
+					tc.mdtm.addRow(v);
+					
+				}break;*/
+				case 200:{
+					tc.initDisplay2();
+					String nickname = st.nextToken();
+					String selectedNickname = st.nextToken();
+					
+					tc.mjta_display.append(nickname+"님이 접속하셨습니다. \n");
+					tc.mjta_display.append(selectedNickname+"님이 접속하셨습니다. \n");
+					Vector<String> v = new Vector<>();
+					v.add(nickname);
+					tc.mdtm.addRow(v);
+					v = new Vector<>();
+					v.add(selectedNickname);
+					tc.mdtm.addRow(v);
 					
 				}break;
+				case 301:{
+					String nickname = st.nextToken();
+					String message = st.nextToken();
+					
+					tc.mjta_display.append("["+nickname+"] "+message+"\n");
+					tc.mjta_display.setCaretPosition(tc.mjta_display.getDocument().getLength());
+				}
 				}
 
 			} catch (ClassNotFoundException e) {

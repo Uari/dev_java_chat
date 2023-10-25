@@ -19,6 +19,7 @@ import _Chat.step2.TalkServerThread2;
 public class TalkServer extends JFrame implements Runnable{
 	TalkServerThread2 		tst 		= null;
 	List<TalkServerThread> 	globalList 	= null;
+	List<TalkServerThread> 	globalList2 = null;
 	ServerSocket 			server 		= null;
 	Socket 					socket 		= null;
 	JTextArea 				jta_log = new JTextArea(10,30);
@@ -41,6 +42,7 @@ public class TalkServer extends JFrame implements Runnable{
 		//서버에 접속해온 클라이언트 스레드 정보를 관리할 벡터 생성하기 
 		boolean isStop = false;
 		globalList = new Vector<>();//다른 유저도 들어올수 있음
+		globalList2 = new Vector<>();//다른 유저도 들어올수 있음
 		
 		try {
 			server = new ServerSocket(3002);

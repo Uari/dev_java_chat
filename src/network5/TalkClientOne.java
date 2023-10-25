@@ -47,13 +47,19 @@ public class TalkClientOne extends JFrame implements ActionListener {
 	
 	String nickName2;
 	String selectedNickname;
+	TalkClient tc = null;
 
-	public TalkClientOne(String nickName2, String selectedNickname) {
+	public TalkClientOne(TalkClient tc,String nickName2, String selectedNickname) {
+		this.tc = tc;
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		this.nickName2 = nickName2;
 		this.selectedNickname = selectedNickname;
 		initDisplay();
 		init();
+	}
+
+	public TalkClientOne() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public void initDisplay() {
@@ -96,21 +102,28 @@ public class TalkClientOne extends JFrame implements ActionListener {
 	
 	public void init() {
 		//통신하는 로직
-		/*try {
-			//socket = new Socket("172.16.2.27", 3002);
+		try {
+			socket = new Socket("172.16.2.27", 3002);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			
-			oos.writeObject(300+"|"+nickName2+"|"+selectedNickname);
+			tc.oos.writeObject(200+"|"+nickName2+"|"+selectedNickname);
 			
-			TalkClientThread tct = new TalkClientThread(this);
+			TalkClientThread tct = new TalkClientThread(tc);
 			tct.start();
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
+	}
+	public static void main(String args[]) {
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		TalkClientOne tco = new TalkClientOne();
+		tco.nickName2 = "test";
+		tco.initDisplay();
+		tco.init();
 	}
 
 	@Override

@@ -12,6 +12,8 @@ public class TalkServerThread extends Thread {
 	ObjectOutputStream oos = null;
 	ObjectInputStream ois = null;
 	String chatName = null;// 현재 서버에 입장한 클라이언트 스레드 닉네임 저장
+	String chatName2 = null;
+	String charName3 = null;
 
 	public TalkServerThread(TalkServer ts) {
 		this.ts = ts;
@@ -52,10 +54,30 @@ public class TalkServerThread extends Thread {
 		}
 	}
 	//1:1 메세지 전송
-	public void oneCasting(String msg, int rowNum) {
-		TalkServerThread tst = ts.globalList.get(rowNum);
+	public void oneCasting(String msg) {
+		for (TalkServerThread tst : ts.globalList2) {
 			tst.send(msg);
+		}
+	}
+	public void oneInit(String msg) {
+		StringTokenizer st = new StringTokenizer(msg, "|");
+		st.nextToken();
+		chatName2 = st.nextToken();
+		charName3 = st.nextToken();
+		int rowRum = Integer.parseInt(st.nextToken());
+		int selectedRowRum = Integer.parseInt(st.nextToken());
 		
+		for (TalkServerThread tst : ts.globalList) {
+			if(tst.equals(ts.globalList.get(rowRum))) {
+				ts.globalList2.add(tst);
+			}else if(tst.equals(ts.globalList.get(selectedRowRum))){
+				ts.globalList2.add(tst);
+			}
+		}
+		System.out.println(ts.globalList2);
+		for (TalkServerThread tst : ts.globalList2) {
+			tst.send(msg);
+		}
 	}
 
 	// 클라이언트에게 말하기 구현
@@ -112,9 +134,16 @@ public class TalkServerThread extends Thread {
 				case 200:{
 					String nickname = st.nextToken();
 					String selectedName = st.nextToken();
+					String rowNum = st.nextToken();
+					String selectRowNum = st.nextToken();
 					//int selectedRowNum = Integer.parseInt(st.nextToken());
-					//oneCasting(200 + "|" + nickname + "|", selectedRowNum);
-					broadCasting(200 + "|" + nickname + "|" +selectedName);
+					oneInit(200 + "|" + nickname + "|"+selectedName+"|"+rowNum+"|"+selectRowNum);
+					//broadCasting(200 + "|" + nickname + "|" +selectedName);
+				}break;
+				case 301:{
+					String nickName = st.nextToken();
+					String message = st.nextToken();
+					oneCasting(301 + "|" + nickName + "|" + message);
 				}break;
 				}
 			} 

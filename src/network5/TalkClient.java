@@ -21,8 +21,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import com_step4.View;
+
 public class TalkClient extends JFrame implements ActionListener {
-	
+
 	Socket socket = null;
 	ObjectOutputStream oos = null;// 말 하고 싶을 때
 	ObjectInputStream ois = null;// 듣기 할 때
@@ -45,11 +47,27 @@ public class TalkClient extends JFrame implements ActionListener {
 	JButton jbtn_send = new JButton("전송");// south속지 east
 	JTextArea jta_display = null;
 	JScrollPane jsp_display = null;
-	
+
 	LoginForm loginForm = null;
 
+	JPanel mjp_second = new JPanel();
+	JPanel mjp_second_south = new JPanel();
+	// JButton mjbtn_one = new JButton("1:1");
+	JButton mjbtn_exit = new JButton("나가기");
+	String mcols[] = { "대화명" };
+	String mdata[][] = new String[0][1];
+	DefaultTableModel mdtm = new DefaultTableModel(mdata, mcols);
+	JTable mjtb = new JTable(mdtm);
+	JScrollPane mjsp = new JScrollPane(mjtb);
+	JPanel mjp_first = new JPanel();
+	JPanel mjp_first_south = new JPanel();
+	JTextField mjtf_msg = new JTextField(20);// south속지 center
+	JButton mjbtn_send = new JButton("전송");// south속지 east
+	JTextArea mjta_display = new JTextArea();
+	JScrollPane mjsp_display = new JScrollPane(mjta_display);
+
 	public TalkClient() {
-		
+
 	}
 
 	public TalkClient(LoginForm loginForm) {
@@ -66,10 +84,10 @@ public class TalkClient extends JFrame implements ActionListener {
 		jbtn_exit.addActionListener(this);
 		jbtn_change.addActionListener(this);
 		jbtn_font.addActionListener(this);
-		
+
 		// 사용자의 닉네임 받기
-		//nickName = loginForm.nickName;  //test일때 실행시키지 않음
-		
+		// nickName = loginForm.nickName; //test일때 실행시키지 않음
+
 		this.setLayout(new GridLayout(1, 2));
 		jp_second.setLayout(new BorderLayout());
 		jp_second.add("Center", jsp);
@@ -97,19 +115,82 @@ public class TalkClient extends JFrame implements ActionListener {
 		this.setSize(800, 550);
 		this.setVisible(true);
 	}
-	
+
+	/*public void initDisplay2(String nickName2, String selectedNickname) {
+		this.mnickName = nickName2;
+		this.selectedNickname = selectedNickname;
+		JFrame jf = new JFrame();
+
+		jf.setLayout(new GridLayout(1, 2));
+		mjp_second.setLayout(new BorderLayout());
+		mjp_second.add("Center", mjsp);
+		mjp_second_south.setLayout(new GridLayout(2, 2));
+		// mjp_second_south.add(jbtn_one);
+		mjp_second_south.add(mjbtn_exit);
+		mjp_second.add("South", mjp_second_south);
+		mjp_first.setLayout(new BorderLayout());
+		mjp_first_south.setLayout(new BorderLayout());
+		mjp_first_south.add("Center", mjtf_msg);
+		mjp_first_south.add("East", mjbtn_send);
+		// mjta_display = new JTextArea();
+		mjta_display.setLineWrap(true);
+		mjta_display.setOpaque(false);
+		Font mfont = new Font("굴림체", Font.BOLD, 16);
+		mjta_display.setFont(mfont);
+		// mjsp_display = new JScrollPane(mjta_display);
+		mjp_first.add("Center", mjsp_display);
+		mjp_first.add("South", mjp_first_south);
+
+		jf.add(mjp_first);
+		jf.add(mjp_second);
+		jf.setTitle("1:1 대화방");
+		jf.setSize(500, 550);
+		jf.setVisible(true);
+	}*/
+	public void initDisplay2() {
+		mjtf_msg.addActionListener(this);
+		
+		JFrame jf = new JFrame();
+		
+		jf.setLayout(new GridLayout(1, 2));
+		mjp_second.setLayout(new BorderLayout());
+		mjp_second.add("Center", mjsp);
+		mjp_second_south.setLayout(new GridLayout(2, 2));
+		// mjp_second_south.add(jbtn_one);
+		mjp_second_south.add(mjbtn_exit);
+		mjp_second.add("South", mjp_second_south);
+		mjp_first.setLayout(new BorderLayout());
+		mjp_first_south.setLayout(new BorderLayout());
+		mjp_first_south.add("Center", mjtf_msg);
+		mjp_first_south.add("East", mjbtn_send);
+		// mjta_display = new JTextArea();
+		mjta_display.setLineWrap(true);
+		mjta_display.setOpaque(false);
+		Font mfont = new Font("굴림체", Font.BOLD, 16);
+		mjta_display.setFont(mfont);
+		// mjsp_display = new JScrollPane(mjta_display);
+		mjp_first.add("Center", mjsp_display);
+		mjp_first.add("South", mjp_first_south);
+		
+		jf.add(mjp_first);
+		jf.add(mjp_second);
+		jf.setTitle("1:1 대화방");
+		jf.setSize(500, 550);
+		jf.setVisible(true);
+	}
+
 	public void init() {
-		//통신하는 로직
+		// 통신하는 로직
 		try {
 			socket = new Socket("172.16.2.27", 3002);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
-			
-			oos.writeObject(100+"|"+nickName);
-			
+
+			oos.writeObject(100 + "|" + nickName);
+
 			TalkClientThread tct = new TalkClientThread(this);
 			tct.start();
-			
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -128,71 +209,91 @@ public class TalkClient extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
-		//100(접속)|200(1:1대화)|201(대화)|202(대화명 바꾸기)|500(나가기)
-		if(obj == jbtn_exit) {//protocol : 500
-			String exitMsg = nickName+"님이 대화방을 나가셨습니다.\n";
+		// 100(접속)|200(1:1대화)|201(대화)|202(대화명 바꾸기)|500(나가기)
+		if (obj == jbtn_exit) {// protocol : 500
+			String exitMsg = nickName + "님이 대화방을 나가셨습니다.\n";
 			try {
-				oos.writeObject(500+"|"+nickName+"|"+exitMsg);
+				oos.writeObject(500 + "|" + nickName + "|" + exitMsg);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 			dispose();
 			loginForm.setVisible(true);
-			
-		}else if(obj == jtf_msg) {//대화 protocol : 201
+
+		} else if (obj == jtf_msg) {// 대화 protocol : 201
 			String msg = jtf_msg.getText();
 			try {
-				oos.writeObject(201+"|"+nickName+"|"+msg);
+				oos.writeObject(201 + "|" + nickName + "|" + msg);
 				jtf_msg.setText("");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-		}else if(obj == jbtn_change) {//protocol : 202
+		} else if (obj == jbtn_change) {// protocol : 202
 			String afterNickName = JOptionPane.showInputDialog("변경할 대화명을 입력하세요.");
-			String changeMsg = nickName+"의 대화명이 "+afterNickName+"으로 변경되었습니다. \n";
-			if(afterNickName == null || afterNickName.trim().length()<1) {
-				JOptionPane.showMessageDialog(this
-				, "변경할 대화명을 입력하세요"
-				, "INFO", JOptionPane.INFORMATION_MESSAGE);
+			String changeMsg = nickName + "의 대화명이 " + afterNickName + "으로 변경되었습니다. \n";
+			if (afterNickName == null || afterNickName.trim().length() < 1) {
+				JOptionPane.showMessageDialog(this, "변경할 대화명을 입력하세요", "INFO", JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
 			try {
-				oos.writeObject(202+"|"+nickName+"|"+afterNickName+"|"+changeMsg);
+				oos.writeObject(202 + "|" + nickName + "|" + afterNickName + "|" + changeMsg);
 			} catch (Exception e2) {
-				
+
 			}
-		}else if (obj == jbtn_font) {//protocol : 203
-			String []fontColor = {"Red", "Blue", "Green", "Black"};
-			Object selected = JOptionPane.showInputDialog(
-					null, 
-					"원하는 색을 선택 하세요!!",
-					"글자색 변경",
-					JOptionPane.QUESTION_MESSAGE, 
-					null, 
-					fontColor, 
-					fontColor[3]
-					);
-			if(selected == null) {
-			JOptionPane.showMessageDialog(null, "뭐야.. 원하는거 없어??;");
-			}else {
+		} else if (obj == jbtn_font) {// protocol : 203
+			String[] fontColor = { "Red", "Blue", "Green", "Black" };
+			Object selected = JOptionPane.showInputDialog(null, "원하는 색을 선택 하세요!!", "글자색 변경",
+					JOptionPane.QUESTION_MESSAGE, null, fontColor, fontColor[3]);
+			if (selected == null) {
+				JOptionPane.showMessageDialog(null, "뭐야.. 원하는거 없어??;");
+			} else {
 				try {
-					oos.writeObject(203+"|"+nickName+"|"+selected);
+					oos.writeObject(203 + "|" + nickName + "|" + selected);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
-		}else if (obj == jbtn_one) {//protocol : 200
+			/*
+			 * }else if (obj == jbtn_one) {//protocol : 200 int selectedRowNum =
+			 * jtb.getSelectedRow(); String selectedNickname =
+			 * (String)jtb.getValueAt(selectedRowNum, 0);
+			 * if(nickName.equals(selectedNickname)) { JOptionPane.showMessageDialog(null,
+			 * "잘못 선택 하셨습니다."); }else { //try {
+			 * //oos.writeObject(200+"|"+nickName+"|"+selectedNickname); //new
+			 * TalkClientOne(this, nickName, selectedNickname);
+			 * initDisplay2(nickName,selectedNickname); try {
+			 * oos.writeObject(200+"|"+nickName+"|"+selectedNickname); } catch (IOException
+			 * e1) { e1.printStackTrace(); } //} catch (IOException e1) { //
+			 * e1.printStackTrace(); //} }
+			 */
+		} else if (obj == jbtn_one) {// protocol : 200
+			int rowNum = 0;
 			int selectedRowNum = jtb.getSelectedRow();
-			String selectedNickname = (String)jtb.getValueAt(selectedRowNum, 0);
-			if(nickName.equals(selectedNickname)) {
+			String selectedNickname = (String) jtb.getValueAt(selectedRowNum, 0);
+			
+			for(int i = 0; i<dtm.getRowCount(); i++) {
+				if(nickName.equals((String)dtm.getValueAt(i, 0))) {
+					rowNum = i;
+					break;
+				}
+			}
+			
+			if (nickName.equals(selectedNickname)) {
 				JOptionPane.showMessageDialog(null, "잘못 선택 하셨습니다.");
-			}else {
+			} else {
 				try {
-					oos.writeObject(200+"|"+nickName+"|"+selectedNickname);
-					//new TalkClientOne(nickName, selectedNickname);
+					oos.writeObject(200 + "|" + nickName + "|" + selectedNickname+"|"+rowNum+"|"+selectedRowNum);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+			}
+		} else if (obj == mjtf_msg) {
+			String msg = mjtf_msg.getText();
+			try {
+				oos.writeObject(301 + "|" + nickName + "|" + msg);
+				mjtf_msg.setText("");
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 		}
 	}
