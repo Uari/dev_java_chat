@@ -109,8 +109,7 @@ public class TalkClientThread extends Thread {
 				}break;
 				case 200:{
 					String nickname = st.nextToken();
-					int selectedRowNum = Integer.parseInt(st.nextToken());
-					String nickName2 = (String)tc.dtm.getValueAt(selectedRowNum, 0);
+					String selectedRowNum = st.nextToken();
 					
 				}break;
 				}

@@ -188,8 +188,8 @@ public class TalkClient extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "잘못 선택 하셨습니다.");
 			}else {
 				try {
-					oos.writeObject(200+"|"+nickName+"|"+selectedRowNum);
-					new TalkClientOne(nickName, selectedNickname);
+					oos.writeObject(200+"|"+nickName+"|"+selectedNickname);
+					//new TalkClientOne(nickName, selectedNickname);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

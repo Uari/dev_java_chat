@@ -111,9 +111,10 @@ public class TalkServerThread extends Thread {
 				}break;
 				case 200:{
 					String nickname = st.nextToken();
-					int selectedRowNum = Integer.parseInt(st.nextToken());
+					String selectedName = st.nextToken();
+					//int selectedRowNum = Integer.parseInt(st.nextToken());
 					//oneCasting(200 + "|" + nickname + "|", selectedRowNum);
-					broadCasting(200 + "|" + nickname + "|" +selectedRowNum);
+					broadCasting(200 + "|" + nickname + "|" +selectedName);
 				}break;
 				}
 			} 
