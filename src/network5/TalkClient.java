@@ -115,6 +115,7 @@ public class TalkClient extends JFrame implements ActionListener {
 		this.setTitle(nickName);
 		this.setSize(800, 550);
 		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	public void initDisplay2() {
@@ -161,6 +162,7 @@ public class TalkClient extends JFrame implements ActionListener {
 		jf.setTitle("1:1 대화방");
 		jf.setSize(500, 550);
 		jf.setVisible(true);
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	public void init() {

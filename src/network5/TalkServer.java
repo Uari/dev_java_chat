@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 import _Chat.step2.TalkServerThread2;
 
@@ -34,8 +35,9 @@ public class TalkServer extends JFrame implements Runnable{
 		this.add("Center",jsp_log);
 		this.setSize(500, 400);
 		this.setVisible(true);
-		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	
 	//서버소켓과 클라이언트측 소켓을 연결하기
 	@Override
 	public void run() {
