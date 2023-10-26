@@ -25,7 +25,7 @@ public class TalkServerThread extends Thread {
 			oos = new ObjectOutputStream(client.getOutputStream());
 			ois = new ObjectInputStream(client.getInputStream());
 			// 메세지 불러오기
-			msg = (String)ois.readObject();
+			msg = (String) ois.readObject();
 			ts.jta_log.append(msg + "\n");
 			// 메세지 쪼개기 & 닉네임 저장
 			StringTokenizer st = new StringTokenizer(msg, "|");
@@ -53,13 +53,26 @@ public class TalkServerThread extends Thread {
 			tst.send(msg);
 		}
 	}
-	//1:1 메세지 전송
+
+	// 1:1 메세지 전송
 	public void oneCasting(String msg) {
-		for (TalkServerThread tst : ts.globalList2) {
-			System.out.println("oneCast"+tst);
-			tst.send(msg);
+		StringTokenizer st = new StringTokenizer(msg, "|");
+		int num = Integer.parseInt(st.nextToken());
+		if(num == 600) {
+			for (TalkServerThread tst : ts.globalList2) {
+				tst.send(msg);
+			}
+			if (ts.globalList2.size() != 0) {
+				ts.globalList2.clear();
+			}
+		}else {
+			for (TalkServerThread tst : ts.globalList2) {
+				System.out.println("oneCast" + tst);
+				tst.send(msg);
+			}
 		}
 	}
+
 	public void oneInit(String msg) {
 		StringTokenizer st = new StringTokenizer(msg, "|");
 		st.nextToken();
@@ -67,16 +80,16 @@ public class TalkServerThread extends Thread {
 		charName3 = st.nextToken();
 		int rowRum = Integer.parseInt(st.nextToken());
 		int selectedRowRum = Integer.parseInt(st.nextToken());
-		
+
 		for (TalkServerThread tst : ts.globalList) {
-			if(tst.equals(ts.globalList.get(rowRum))) {
+			if (tst.equals(ts.globalList.get(rowRum))) {
 				ts.globalList2.add(tst);
-			}else if(tst.equals(ts.globalList.get(selectedRowRum))){
+			} else if (tst.equals(ts.globalList.get(selectedRowRum))) {
 				ts.globalList2.add(tst);
 			}
 		}
 		for (TalkServerThread tst : ts.globalList2) {
-			System.out.println("oneInit"+tst);
+			System.out.println("oneInit" + tst);
 			tst.send(msg);
 		}
 	}
@@ -97,12 +110,12 @@ public class TalkServerThread extends Thread {
 		try {
 			StringTokenizer st = null;
 			int protocol = 0;
-			
+
 			run_start: while (!isStop) {
 				msg = (String) ois.readObject();
 				ts.jta_log.append(msg + "\n");
 				ts.jta_log.setCaretPosition(ts.jta_log.getDocument().getLength());
-				
+
 				if (msg != null) {
 					st = new StringTokenizer(msg, "|");
 					protocol = Integer.parseInt(st.nextToken());// 100
@@ -113,47 +126,52 @@ public class TalkServerThread extends Thread {
 					String nickName = st.nextToken();
 					String message = st.nextToken();
 					broadCasting(201 + "|" + nickName + "|" + message);
-				}break;
+				}
+					break;
 				case 202: {
 					String nickName = st.nextToken();
 					String afterName = st.nextToken();
 					String message = st.nextToken();
 					this.chatName = afterName;
 					broadCasting(202 + "|" + nickName + "|" + afterName + "|" + message);
-				}break;
+				}
+					break;
 				case 500: {
 					String nickName = st.nextToken();
 					String exitMsg = st.nextToken();
 					ts.globalList.remove(this);
-					broadCasting(500 + "|" + nickName + "|" +exitMsg);
-				}break run_start;
-				case 203:{
+					broadCasting(500 + "|" + nickName + "|" + exitMsg);
+				}
+					break run_start;
+				case 203: {
 					String nickname = st.nextToken();
 					String selectFontColor = st.nextToken();
-					broadCasting(203 + "|" + nickname + "|" +selectFontColor);
-				}break;
-				case 200:{
+					broadCasting(203 + "|" + nickname + "|" + selectFontColor);
+				}
+					break;
+				case 200: {
 					String nickname = st.nextToken();
 					String selectedName = st.nextToken();
 					String rowNum = st.nextToken();
 					String selectRowNum = st.nextToken();
-					//int selectedRowNum = Integer.parseInt(st.nextToken());
-					oneInit(200 + "|" + nickname + "|"+selectedName+"|"+rowNum+"|"+selectRowNum);
-					//broadCasting(200 + "|" + nickname + "|" +selectedName);
-				}break;
-				case 301:{
+					// int selectedRowNum = Integer.parseInt(st.nextToken());
+					oneInit(200 + "|" + nickname + "|" + selectedName + "|" + rowNum + "|" + selectRowNum);
+					// broadCasting(200 + "|" + nickname + "|" +selectedName);
+				}
+					break;
+				case 301: {
 					String nickName = st.nextToken();
 					String message = st.nextToken();
 					oneCasting(301 + "|" + nickName + "|" + message);
-				}break;
-				case 600:{
+				}
+					break;
+				case 600: {
 					String nickName = st.nextToken();
 					String exitMsg = st.nextToken();
-					ts.globalList2.remove(this);
-					oneCasting(600 + "|" + nickName + "|" +exitMsg);
+					oneCasting(600 + "|" + nickName + "|" + exitMsg);
 				}
 				}
-			} 
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -110,9 +110,9 @@ public class TalkClientThread extends Thread {
 				
 				case 200:{
 					tc.initDisplay2();
+					System.out.println(tc.mdtm.getRowCount());
 					String nickname = st.nextToken();
 					String selectedNickname = st.nextToken();
-					
 					tc.mjta_display.append(nickname+"님이 접속하셨습니다. \n");
 					tc.mjta_display.append(selectedNickname+"님이 접속하셨습니다. \n");
 					ve = new Vector<>();
@@ -133,14 +133,11 @@ public class TalkClientThread extends Thread {
 				case 600:{
 					String nickname = st.nextToken();
 					String exitMsg = st.nextToken();
-					
+					int rowCnt = tc.mdtm.getRowCount();
+					System.out.println(tc.mdtm.getRowCount());
 					//접속자 테이블에서 제거 
-					for(int i = 0; i<tc.mdtm.getRowCount(); i++) {
-						if(nickname.equals((String)tc.mdtm.getValueAt(i, 0))) {
-							tc.mdtm.removeRow(i);
-							ve.removeAllElements();
-							System.out.println(ve);
-						}
+					for(int i = 0; i<rowCnt; i++) {
+						tc.mdtm.removeRow(0);
 					}
 					tc.mjta_display.append(exitMsg);
 					tc.mjta_display.setCaretPosition(tc.mjta_display.getDocument().getLength());

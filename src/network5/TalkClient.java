@@ -51,21 +51,21 @@ public class TalkClient extends JFrame implements ActionListener {
 	LoginForm loginForm = null;
 
 	JFrame jf = null;
-	JPanel mjp_second = new JPanel();
-	JPanel mjp_second_south = new JPanel();
+	JPanel mjp_second = null;
+	JPanel mjp_second_south = null;
 	// JButton mjbtn_one = new JButton("1:1");
-	JButton mjbtn_exit = new JButton("나가기");
+	JButton mjbtn_exit = null;
 	String mcols[] = { "대화명" };
 	String mdata[][] = new String[0][1];
-	DefaultTableModel mdtm = new DefaultTableModel(mdata, mcols);
-	JTable mjtb = new JTable(mdtm);
-	JScrollPane mjsp = new JScrollPane(mjtb);
-	JPanel mjp_first = new JPanel();
-	JPanel mjp_first_south = new JPanel();
-	JTextField mjtf_msg = new JTextField(20);// south속지 center
-	JButton mjbtn_send = new JButton("전송");// south속지 east
-	JTextArea mjta_display = new JTextArea();
-	JScrollPane mjsp_display = new JScrollPane(mjta_display);
+	DefaultTableModel mdtm = null;
+	JTable mjtb = null;
+	JScrollPane mjsp = null;
+	JPanel mjp_first = null;
+	JPanel mjp_first_south = null;
+	JTextField mjtf_msg = null;// south속지 center
+	JButton mjbtn_send= null;// south속지 east
+	JTextArea mjta_display = null;
+	JScrollPane mjsp_display = null;
 
 	public TalkClient() {
 
@@ -118,10 +118,23 @@ public class TalkClient extends JFrame implements ActionListener {
 	}
 
 	public void initDisplay2() {
+		jf = new JFrame();
+		mjp_second = new JPanel();
+		mjp_second_south = new JPanel();
+		// JButton mjbtn_one = new JButton("1:1");
+		mjbtn_exit = new JButton("나가기");
+		mdtm = new DefaultTableModel(mdata, mcols);
+		mjtb = new JTable(mdtm);
+		mjsp = new JScrollPane(mjtb);
+		mjp_first = new JPanel();
+		mjp_first_south = new JPanel();
+		mjtf_msg = new JTextField(20);// south속지 center
+		mjbtn_send = new JButton("전송");// south속지 east
+		mjta_display = new JTextArea();
+		mjsp_display = new JScrollPane(mjta_display);
+		
 		mjtf_msg.addActionListener(this);
 		mjbtn_exit.addActionListener(this);
-		
-		jf = new JFrame();
 		
 		jf.setLayout(new GridLayout(1, 2));
 		mjp_second.setLayout(new BorderLayout());
@@ -134,12 +147,12 @@ public class TalkClient extends JFrame implements ActionListener {
 		mjp_first_south.setLayout(new BorderLayout());
 		mjp_first_south.add("Center", mjtf_msg);
 		mjp_first_south.add("East", mjbtn_send);
-		// mjta_display = new JTextArea();
+		mjta_display = new JTextArea();
 		mjta_display.setLineWrap(true);
 		mjta_display.setOpaque(false);
 		Font mfont = new Font("굴림체", Font.BOLD, 16);
 		mjta_display.setFont(mfont);
-		// mjsp_display = new JScrollPane(mjta_display);
+		mjsp_display = new JScrollPane(mjta_display);
 		mjp_first.add("Center", mjsp_display);
 		mjp_first.add("South", mjp_first_south);
 		
@@ -172,7 +185,7 @@ public class TalkClient extends JFrame implements ActionListener {
 	public static void main(String args[]) {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		TalkClient tc = new TalkClient();
-		tc.nickName = "test3";
+		tc.nickName = "test1";
 		tc.initDisplay();
 		tc.init();
 	}
